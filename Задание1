@@ -1,0 +1,87 @@
+ List<string> mst = new List<string>(){"ч", "б", "т", "п"};
+            Dictionary <Cards,List<string>> AllCard = new Dictionary<Cards, List<string>>()
+            {
+                {(Cards)6,new List<string>(mst)},
+                {(Cards)7,new List<string>(mst)},
+                {(Cards)8,new List<string>(mst)},
+                {(Cards)9,new List<string>(mst)},
+                {(Cards)10,new List<string>(mst)},
+                {Cards.V,new List<string>(mst)},
+                {Cards.D,new List<string>(mst)},
+                {Cards.K,new List<string>(mst)},
+                {Cards.A,new List<string>(mst)},
+            };
+ 
+ enum Cards
+    {
+        Six = 6,
+        Seven = 7,
+        Eight = 8,
+        Nine = 9,
+        Ten = 10,
+        V = 'В',
+        D = 'Д',
+        K = 'К',
+        A = 'Т'
+ 
+    };
+            int players = 0;
+            int.TryParse(Console.ReadLine(),out players);
+            var CardPlay = AllCard;
+            Dictionary<int, List<string>> Hand = new Dictionary<int, List<string>>();
+            if ((players > 0)&&(players<8))
+            {
+                for (int i = 0; i < players; i++)
+                {
+                    int countCard = 0;
+                    List<string> playerHand = new List<string>();
+                    while (countCard<5)
+                    {
+                        Random rand = new Random();
+                        int min = Convert.ToInt32(CardPlay.Keys.Min());
+                        int max = Convert.ToInt32(CardPlay.Keys.Max());
+                        var temp = rand.Next(min, max);
+                        if(!CardPlay.ContainsKey((Cards)temp)) continue;
+                        var cardForPlayer = CardPlay[(Cards) temp];
+                        int countMst = cardForPlayer.Count;
+                        if (countMst != 0)
+                        {
+                            var temp2 = rand.Next(0, countMst);
+                            string nameCard = "";
+                            switch (temp)
+                            {
+                                case 11:
+                                    nameCard = "V";
+                                    break;
+                                case 12:
+                                    nameCard = "Q"; break;
+                                case 13:
+                                    nameCard = "K"; break;
+                                case 14: nameCard = "A"; break;
+                                default: nameCard = temp.ToString();
+                                    break;
+                            }
+                            playerHand.Add($"{nameCard}{CardPlay[(Cards)temp][temp2]}");
+                            CardPlay[(Cards)temp].RemoveAt(temp2);
+                            countCard++;
+                        }
+                        else
+                        {
+                            CardPlay.Remove((Cards)temp);
+                        }
+                    }
+                    Hand.Add(i+1, playerHand);
+                }
+            }
+ 
+            foreach (var vari in Hand)
+            {
+                Console.WriteLine($"Карты Игрока номер {vari.Key} :\n");
+                foreach (var cards in vari.Value)
+                {
+                    Console.WriteLine(cards);
+                    Console.WriteLine();
+                }
+                Console.WriteLine("--------------------------------\n\n");
+            }
+            Console.Read();
